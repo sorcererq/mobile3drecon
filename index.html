@@ -153,82 +153,73 @@
   </section>
   <br>
   
+  <!--Monocular Depth Estimation-->
   <section>
     <div class="container">
       <div class="row">
         <div class="col text-center">
-            <h5><b>Monocular Depth Estimation</b></h5>
-            <br>
-            <img class="img-fluid" src="images/vi-icp.png" width="100%">
-            <p class="text-justify" style="color:#8899a5; font-size:12px"> 
-            ICP tracking results on case "David". (a) Original ICP in <a href="http://www.open3d.org/" target="_blank">Open3D</a>. (b) Our VI-ICP approach. (c) (d) VI-ICP combined with LBA and Loop Closure respectively.
-            </p>
-            <img class="img-fluid" src="images/vi-icp-energy.png" width="40%">
-            <br>
-            <img class="img-fluid" src="images/imu_energy.png" width="40%">
-            <p class="text-justify"> 
-            Our system localizes the camera by loosely coupled integration of ICP and IMU. The IMU state is initialized and optimized with the ICP tracking result and will provide a pose prediction for current frame.
-            The rotation part <img class="img-fluid" src="images/rotation.png" width="5%"> of the predicted pose and gravity <img class="img-fluid" src="images/gravity.png" width="5%"> will be integrated into our ICP energy term to enhance the tracking robustness.
-            </p>
-        </div>
-        <div class="col text-center">
-          <h5><b>Multi-View Stereo with Depth Prior</b></h5>
+          <h5 class="text-left"><li><b>Monocular Depth Estimation</b></li></h5>
           <br>
-          <img class="img-fluid" src="images/sgm.png" width="95%">
-          <p class="text-justify" style="color:#8899a5; font-size:12px"> 
-          Depth refinement on case “David”. (a) A keyframe and its two reference ones. (b) original depth map from iPad Pro. (c) SGM without depth prior. (d) SGM with depth prior.
+          <img class="img-fluid" src="images/mvs_depth.png" width="70%">
+          <p class="text-justify; text-center" style="color:#8899a5; font-size:12px"> 
+            Our monocular depth estimation results on two representative keyframes from sequences “Sofa”. (a) The source keyframe image and its two selected reference keyframe images. (b) The depth estimation result of semi-global MVS and the corresponding point cloud by back-projection. (c) The result after confidence-based depth filtering and its corresponding point cloud. (d) The final depth estimation result after DNN-based refinement with its corresponding point cloud.
           </p>
+          <img class="img-fluid" src="images/mvs_equation.png" width="40%">
           <p class="text-justify">
-          The input depths from consumer RGBD camera such as dToF on iPad Pro might have depth errors or over-smoothness with lost geometric details. 
-          We propose to estimate more accurate depths with geometric details by SGM. The dToF depth measurements are used as depth priors to compute weights for multi-frame cost function as follows:
-          </p>
-          <img class="img-fluid" src="images/sgm_cost.png" width="50%">
-          <br>
+            We estimate depth map using an SGM based multi-view stereo approach, which is carried out in a uniformly sampled inverse depth space.
+            We use weighted Census Transform to compute patch similarity cost <img class="img-fluid" src="images/census_cost.png" width="5%">, with scores of neighboring frames as weights.
+            The aggregated cost <img class="img-fluid" src="images/aggregated_cost.png" width="5%"> among multiple keyframes can be accelerated by NEON, with Winner-Take-All strategy to get the initial depth map. The initial depth map is then refined in sub-level by parabola fitting.
+		  <br>
+		  </p>
+          <img class="img-fluid" src="images/dnn_refinement.png" width="90%">
+		  <br>
           <p class="text-justify">
-          where <img class="img-fluid" src="images/gaussian.png" width="11%"> is the cost fusion weight using a Gaussian function, <img class="img-fluid" src="images/depth_prior.png" width="7%"> is the 
-          dToF depth prior.
+            After the depth filtering, we employ a deep neural network to refine the remaining depth noise. Our network is a two-stage refinement structure.
+            The first stage is an image-guided sub-network, which combines filtered depth with the corresponding gray image to reason a coarse refinement result.
+			The second stage is a residual U-Net which further refines the previous coarse result to get the final refined depth.
           </p>
-        </div>
-        
+       </div>
       </div>
-	  
-      <br>
+    </div>
+  </section>
+  
+  <!--Incremental Mesh Generation-->
+  <br>
+  <section>
+    <div class="container">
       <div class="row">
         <div class="col text-center">
-          <h5><b>Adaptive Voxel Resizing</b></h5>
-          <br>
-          <img class="img-fluid" src="images/voxel_resizing.png" width="100%">
-          <p class="text-justify" style="color:#8899a5; font-size:12px"> 
-          Adaptive voxel resizing on case “Worker”. (a) Origin voxel size: 4mm. (b) After voxel resizing: 6mm. (c) Final 3D mesh: 4mm.
-          </p>
-          <p class="text-justify"> 
-          On a mobile device, the memory usage of TSDF should be kept under an upper limitation (e.g. 200MB) to avoid OOM. The adaptive voxel resizing strategy enable users to scan as large as possible objects with proper voxel resolution, which 
-          will be triggered whenever the memory cost of current TSDF model exceeds the memory limitation. We create a new TSDF volume to represent the object with a larger voxel size (e.g. 1.5 times of origin voxel size) and the new TSDF value is efficiently calculated 
-          by trilinear interpolation of the old voxels. For case "Worker", it costs 65.51 ms on iPad Pro 2020 to complete the voxel resizing.
-          </p>
-        </div>
-        <div class="col text-center">
-            <h5><b>Efficient Shape-From-Shading</b></h5>
-            <br>
-            <img class="img-fluid" src="images/sfs.png" width="93%">
-            <p class="text-justify" style="color:#8899a5; font-size:12px"> 
-            Shape from shading results on case of “David” and "Lion". (a) The 3D models by PSR . (b) The 3D models with SFS.
-            </p>
-            <p class="text-justify">
-            Most existing implementations of SFS are far from feasible to mobile platform due to the limited computation and memory resources. 
-            We perform SFS directly on the mesh, by optimizing an intermediate triangle normal map, followed by updating the vertex positions 
-            according to the optimization of the normal map. It takes only 3.24 seconds on iPad Pro 2020 CPU with RMSE 3.12mm and MAE 2.473mm,  
-            while <a href="https://github.com/NVlabs/intrinsic3d" target="_blank">Intrinsic3D</a> costs 81 minutes on an Intel Core i7 7700K CPU with 32GB RAM to acquire a slightly better result with RMSE 2.89mm and 
-            MAE 2.16mm.
-            </p>
+          <h5 class="text-left"><li><b>Incremental Mesh Generation</b></li></h5>
+		  <br>
+          <img class="img-fluid" src="images/mesh_result.png" width="80%">
+          <p class="text-justify; text-center" style="color:#8899a5; font-size:12px"> 
+			Surface mesh generation results of our four experimental sequences (a)"Indoor stairs", (b)"Sofa", (c)"Desktop" and (d)"Cabinet" captured by OPPO R17 Pro. (a) shows some representative keyframes of each sequence. 
+		  </p>
+		  <p class="text-justify">
+			We present a novel incremental mesh generation approach which can update surface mesh in real-time and is more suitable for AR applications on mobile platform with limited computing resources.
+		  </p>
+          <img class="img-fluid" src="images/incremental_mesh.png" width="30%">
+          <p class="text-justify">
+			Each estimated depth map is integrated into the TSDF voxels, with associated voxels generated / updated in the conventional way.			
+		  </p>
+          <img class="img-fluid" src="images/TSDF.png" width="50%">
+		  <p class="text-justify">
+			To handle the influence of dynamic objects，we project existing voxels to the current frame for depth visibility checking. 
+		  </p>
+          <img class="img-fluid" src="images/dynamic_object_remove.png" width="100%">
+		  <br>
+          <p class="text-justify">
+			We use an incremental marching cubes algorithm to maintain a status variable for each voxel indicating whether it is newly added or updated or not. For each keyframe, we only need to extract or update mesh triangles from the newly added and updated cubes.
+		  </p>
+          <img class="img-fluid" src="images/marching_cube.png" width="50%">
+		  <br>
         </div>
       </div>
     </div>
   </section>
-  <br>
 
   <!-- Comparison with state-of-the-art methods -->
-  <br>
+  <br><br>
   <section>
     <div class="container">
       <div class="row">
