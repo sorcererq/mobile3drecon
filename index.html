@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Mobile3DRecon: Real-time Monocular 3D Reconstruction on a Mobile Phone. Published in the Special Issue of TVCG for ISMAR 2020."/>
+    <title>Mobile3DRecon: Real-time Monocular 3D Reconstruction on a Mobile Phone</title>
+    <!-- Bootstrap -->
+    <link href="css/bootstrap-4.4.1.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+    <style>
+      body {
+        background: #fdfcf9 no-repeat fixed top left;
+        font-family:'Open Sans', sans-serif;
+      }
+    </style>
+
+  </head>
+
+  <!-- cover -->
+  <section>
+    <div class="jumbotron text-center mt-0">
+      <div class="container">
+        <div class="row">
+          <div class="col">
+            <h2 style="font-size:30px;">Mobile3DRecon: Real-time Monocular 3D Reconstruction on a Mobile Phone</h2>
+            <h5 style="color:#6e6e6e;">Special Issue of IEEE Transactions on Visualization and Computer Graphics for ISMAR 2020</h5>
+            <hr>
+            <h6> <a target="_blank">Xingbin Yang</a><sup>1*</sup>, 
+                 <a target="_blank">Liyang Zhou</a><sup>1*</sup>, 
+				 <a target="_blank">Hanqing Jiang</a><sup>1*</sup>, 
+                <a target="_blank">Zhongliang Tang</a><sup>1</sup>,
+                <a target="_blank">Yuanbo Wang</a><sup>1</sup>,
+				<a href="http://www.cad.zju.edu.cn/bao/" target="_blank">Hujun Bao</a><sup>2</sup>,
+                <a href="http://www.cad.zju.edu.cn/home/gfzhang/" target="_blank">Guofeng Zhang</a><sup>2+</sup></h6>
+            <p> <sup>1</sup>SenseTime Research&nbsp;&nbsp; 
+                <sup>2</sup>State Key Lab of CAD & CG, Zhejiang University
+                <br>
+                <sup>*</sup> denotes equal contribution and joint first authorship
+				<br>
+				<sup>+</sup> corresponding author
+            </p>
+
+            <div class="row justify-content-center">
+              <div class="column">
+                  <p class="mb-5"><a class="btn btn-large btn-light" href="https://ieeexplore.ieee.org/document/9201064" role="button"  target="_blank">
+                    <i class="fa fa-file"></i> Paper</a> </p>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- abstract -->
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col-12 text-center">
+            <img class="img-fluid" src="images/teaser.png" alt="Mobile3DRecon Teaser" width="100%">
+        </div>
+      </div>
+    </div>
+  </section>
+  <br>
+  <br>
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col-12 text-center">
+          <h3>Abstract</h3>
+            <hr style="margin-top:0px;">
+            <p class="text-justify">
+              We present a real-time monocular 3D reconstruction system on a mobile phone, called Mobile3DRecon. Using an embedded monocular camera, our system provides an online mesh generation capability on back end together with real-time 6DoF pose tracking on front end for users to achieve realistic AR effects and interactions on mobile phones. Unlike most existing state-of-the-art systems which produce only point cloud based 3D models online or surface mesh offline, we propose a novel online incremental mesh generation approach to achieve fast online dense surface mesh reconstruction to satisfy the demand of real-time AR applications. For each keyframe of 6DoF tracking, we perform a robust monocular depth estimation, with a multi-view semi-global matching method followed by a depth refinement post-processing. The proposed mesh generation module incrementally fuses each estimated keyframe depth map to an online dense surface mesh, which is useful for achieving realistic AR effects such as occlusions and collisions. We verify our real-time reconstruction results on two mid-range mobile platforms. The experiments with quantitative and qualitative evaluation demonstrate the effectiveness of the proposed monocular 3D reconstruction system, which can handle the occlusions and collisions between virtual objects and real scenes to achieve realistic AR effects.            </p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <br>
+
+  <!-- Reconstruction Showcase -->
+  <br>
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col-12 text-center">
+            <h3>Reconstruction showcase</h3>
+            <hr style="margin-top:0px">
+            <br>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col text-center">
+            <video width="100%" playsinline="" controls autoplay loop="loop" preload="" muted="">
+                <source src="videos/sup-1.mp4" type="video/mp4">
+            </video>
+        </div>
+        <div class="col text-center">
+            <video width="100%" playsinline="" controls autoplay loop="loop" preload="" muted="">
+                <source src="videos/sup-2.mp4" type="video/mp4">
+            </video>
+        </div>
+      </div>
+    </div>
+  </section>
+  <br>
+
+  <!-- system overview -->
+  <br>
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col-12 text-center">
+            <h3>System overview</h3>
+            <hr style="margin-top:0px">
+
+            <img class="img-fluid" src="images/system_overview.png" alt="Mobile3DRecon System Overview" width="100%">
+            <br>
+            <br>
+            <p class="text-justify"> 
+			  Our pipeline performs an incremental online mesh generation. Here is the system overview of our pipeline. 
+			  6DoF poses are tracked with a keyframe-based visual-inertial SLAM system, which
+			  maintains a keyframe pool on the back end with a global BA for keyframe pose refinement as feedback to the front end tracking.
+			  After the 6DoF tracking is initialized normally on the front end, for a latest incoming keyframe with its globally
+			  optimized pose, its dense depth map is online estimated by multi-view SGM, with a part of previous keyframes selected as reference frames.
+			  A convolutional neural network follows to refine depth noise. The refined key-frame depth map is then fused to generate dense surface mesh.
+			  High level AR applications can utilize this real-time dense mesh and the 6DoF SLAM poses to achieve realistic AR effects on the front end.
+            </p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <br>
+
+  <!-- Contributions -->
+  <br>
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col-12 text-center">
+            <h3>Contributions</h3>
+            <hr style="margin-top:0px">
+        </div>
+      </div>
+    </div>
+  </section>
+  <br>
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col text-center">
+            <h5><b>Visual-Inertial ICP Tracking</b></h5>
+            <br>
+            <img class="img-fluid" src="images/vi-icp.png" width="100%">
+            <p class="text-justify" style="color:#8899a5; font-size:12px"> 
+            ICP tracking results on case "David". (a) Original ICP in <a href="http://www.open3d.org/" target="_blank">Open3D</a>. (b) Our VI-ICP approach. (c) (d) VI-ICP combined with LBA and Loop Closure respectively.
+            </p>
+            <img class="img-fluid" src="images/vi-icp-energy.png" width="40%">
+            <br>
+            <img class="img-fluid" src="images/imu_energy.png" width="40%">
+            <p class="text-justify"> 
+            Our system localizes the camera by loosely coupled integration of ICP and IMU. The IMU state is initialized and optimized with the ICP tracking result and will provide a pose prediction for current frame.
+            The rotation part <img class="img-fluid" src="images/rotation.png" width="5%"> of the predicted pose and gravity <img class="img-fluid" src="images/gravity.png" width="5%"> will be integrated into our ICP energy term to enhance the tracking robustness.
+            </p>
+        </div>
+        <div class="col text-center">
+          <h5><b>Multi-View Stereo with Depth Prior</b></h5>
+          <br>
+          <img class="img-fluid" src="images/sgm.png" width="95%">
+          <p class="text-justify" style="color:#8899a5; font-size:12px"> 
+          Depth refinement on case “David”. (a) A keyframe and its two reference ones. (b) original depth map from iPad Pro. (c) SGM without depth prior. (d) SGM with depth prior.
+          </p>
+          <p class="text-justify">
+          The input depths from consumer RGBD camera such as dToF on iPad Pro might have depth errors or over-smoothness with lost geometric details. 
+          We propose to estimate more accurate depths with geometric details by SGM. The dToF depth measurements are used as depth priors to compute weights for multi-frame cost function as follows:
+          </p>
+          <img class="img-fluid" src="images/sgm_cost.png" width="50%">
+          <br>
+          <p class="text-justify">
+          where <img class="img-fluid" src="images/gaussian.png" width="11%"> is the cost fusion weight using a Gaussian function, <img class="img-fluid" src="images/depth_prior.png" width="7%"> is the 
+          dToF depth prior.
+          </p>
+        </div>
+        
+      </div>
+      <br>
+      <div class="row">
+        <div class="col text-center">
+          <h5><b>Adaptive Voxel Resizing</b></h5>
+          <br>
+          <img class="img-fluid" src="images/voxel_resizing.png" width="100%">
+          <p class="text-justify" style="color:#8899a5; font-size:12px"> 
+          Adaptive voxel resizing on case “Worker”. (a) Origin voxel size: 4mm. (b) After voxel resizing: 6mm. (c) Final 3D mesh: 4mm.
+          </p>
+          <p class="text-justify"> 
+          On a mobile device, the memory usage of TSDF should be kept under an upper limitation (e.g. 200MB) to avoid OOM. The adaptive voxel resizing strategy enable users to scan as large as possible objects with proper voxel resolution, which 
+          will be triggered whenever the memory cost of current TSDF model exceeds the memory limitation. We create a new TSDF volume to represent the object with a larger voxel size (e.g. 1.5 times of origin voxel size) and the new TSDF value is efficiently calculated 
+          by trilinear interpolation of the old voxels. For case "Worker", it costs 65.51 ms on iPad Pro 2020 to complete the voxel resizing.
+          </p>
+        </div>
+        <div class="col text-center">
+            <h5><b>Efficient Shape-From-Shading</b></h5>
+            <br>
+            <img class="img-fluid" src="images/sfs.png" width="93%">
+            <p class="text-justify" style="color:#8899a5; font-size:12px"> 
+            Shape from shading results on case of “David” and "Lion". (a) The 3D models by PSR . (b) The 3D models with SFS.
+            </p>
+            <p class="text-justify">
+            Most existing implementations of SFS are far from feasible to mobile platform due to the limited computation and memory resources. 
+            We perform SFS directly on the mesh, by optimizing an intermediate triangle normal map, followed by updating the vertex positions 
+            according to the optimization of the normal map. It takes only 3.24 seconds on iPad Pro 2020 CPU with RMSE 3.12mm and MAE 2.473mm,  
+            while <a href="https://github.com/NVlabs/intrinsic3d" target="_blank">Intrinsic3D</a> costs 81 minutes on an Intel Core i7 7700K CPU with 32GB RAM to acquire a slightly better result with RMSE 2.89mm and 
+            MAE 2.16mm.
+            </p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <br>
+
+  <!-- Comparison with state-of-the-art methods -->
+  <br>
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col-12 text-center">
+            <h3>Comparison with state-of-the-art methods</h3>
+            <hr style="margin-top:0px">
+
+            <img class="img-fluid" src="images/compare_SOTA.png" alt="Quantitative Comparison" width="90%">
+            <p class="text-justify"> 
+            Comparison of our Mobile3DScanner with other state-of-the-art methods: (a) Three representative keyframes in case “La Marseillaise”. 
+            (b) <a href="http://www.open3d.org/" target="_blank">Open3D</a>. 
+            (c) <a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/ismar2011.pdf" target="_blank">KinectFusion</a>. 
+            (d) <a href="https://www.robots.ox.ac.uk/~victor/infinitam/" target="_blank">InfiniTAM</a>. 
+            (e) <a href="http://graphics.stanford.edu/projects/bundlefusion/" target="_blank">BundleFusion</a>.
+            (f) <a href="https://www.3dscannerapp.com/" target="_blank">3D Scanner App</a>. 
+            (g) Ours Mobile3DScanner. 
+            (h) The GT model aqcuired by a commercial 3D scanner.
+            </p>
+
+            <img class="img-fluid" src="images/model_accuracy.png" alt="Qualitative Comparison" width="90%">
+            <p class="text-justify"> 
+            The RMSEs and MAEs of the reconstruction results by our Mobile3DScanner and other SOTA methods on our four experimental cases captured by iPad Pro 2020, with each object scanned by a commercial 3D scanner as GT.
+            </p>
+
+            <img class="img-fluid" src="images/time_consumption.png" alt="Time Consumption" width="90%">
+            <p class="text-justify">
+            The detailed time consumptions of our Mobile3DScanner in all the substeps of three cases “Deer”, “La Marseillaise” and “Worker” on an iPad Pro 2020, which contain 487 frames, 1098 frames, and 1438 frames respectively.
+            </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col-12 text-center">
+            <img class="img-fluid" src="images/more_result.png" alt="Quantitative Comparison" width="100%">
+        </div>
+      </div>
+    </div>
+  </section>
+  <br>
+
+  
+  <!-- citing -->
+  <br>
+  <div class="container">
+    <div class="row ">
+      <div class="col-12">
+          <h3>Citation</h3>
+          <hr style="margin-top:0px">
+              <pre style="background-color: #e9eeef;padding: 1.25em 1.5em">
+<code>@article{yang2020mobile3drecon,
+  title={{Mobile3DRecon}: Real-time Monocular 3D Reconstruction on a Mobile Phone},
+  author={Yang, Xingbin and Zhou, Liyang, and Jiang, Hanqing and Tang, Zhongliang and Wang, Yuanbo and Bao, Hujun and Zhang, Guofeng},
+  journal={IEEE Transactions on Visualization and Computer Graphics},
+  year={2020}
+}</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ack -->
+  <div class="container">
+    <div class="row ">
+      <div class="col-12">
+          <h3>Acknowledgements</h3>
+          <hr style="margin-top:0px">
+          <p class="text-justify">
+            We would like to thank Feng Pan and Li Zhou for their kind help in the development of the mobile reconstruction system and the experimental evaluation.
+			This work was partially supported by NSF of China (Nos. 61672457 and 61822310), and the Fundamental Research Funds for the Central Universities (No. 2019XZZX004-09).
+          </p>
+      </div>
+    </div>
+  </div>
+  
+  
+  <footer class="text-center" style="margin-bottom:10px; font-size: medium;">
+      <hr>
+      Thanks to <a href="https://lioryariv.github.io/" target="_blank">Lior Yariv</a> for the <a href="https://lioryariv.github.io/idr/" target="_blank">website template</a>.
+  </footer>
+
+  <script type="text/javascript">
+    function changePlaybackSpeed(speed)
+        {
+            document.getElementById('inspect_vid').playbackRate = speed;
+        }
+        // changePlaybackSpeed(0.25)
+
+    var demo = document.getElementById("header_vid");
+    var startTime;
+    var timeout = undefined;
+    demo.addEventListener("loadstart", function() {
+      startTime = Date.now();
+      timeout = setTimeout(function () {
+        var demoWarning = document.getElementById("demo-warning");
+        var giteeLink = document.createElement("a");
+        giteeLink.innerText = "mirror hosted in mainland China";
+        giteeLink.href = "https://project-pages-1255496016.cos-website.ap-shanghai.myqcloud.com/neuralrecon/";
+        // var bilibiliLink = document.createElement("a");
+        // var youtubeLink = document.createElement("a");
+        // bilibiliLink.innerText = "BiliBili";
+        // bilibiliLink.href = "";
+        // youtubeLink.innerText = "YouTube";
+        // youtubeLink.href = "";
+
+        demoWarning.append("Loading the videos took too long, you can optionally visit this site in the ", giteeLink, ".");
+        // demoWarning.append("Loading the video took too long, you can optionally watch it on Bilibili", bilibiliLink, " or YouTube", youtubeLink, ".");
+        clearTimeout(timeout);
+        timeout = undefined;
+      }, 6000);
+    });
+    demo.addEventListener("loadeddata", function() {
+      if (timeout) {
+        clearTimeout(timeout);
+        timeout = undefined;
+      }
+    });
+//     var source = document.createElement("source");
+//     source.setAttribute("src", "/videos/web-scene2.m4v");
+//     source.setAttribute("type", "video/webm");
+//     demo.appendChild(source);
+  </script>
+  <script>
+    MathJax = {
+      tex: {inlineMath: [['$', '$'], ['\\(', '\\)']]}
+    };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</body>
+</html>
