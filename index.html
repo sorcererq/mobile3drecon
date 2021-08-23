@@ -160,11 +160,11 @@
         <div class="col text-center">
           <h5 class="text-left"><li><b>Monocular Depth Estimation</b></li></h5>
           <br>
-          <img class="img-fluid" src="images/mvs_depth.png" width="70%">
+          <img class="img-fluid" src="images/mvs_depth.png" width="65%">
           <p class="text-justify; text-center" style="color:#8899a5; font-size:12px"> 
             Our monocular depth estimation results on two representative keyframes from sequences “Sofa”. (a) The source keyframe image and its two selected reference keyframe images. (b) The depth estimation result of semi-global MVS and the corresponding point cloud by back-projection. (c) The result after confidence-based depth filtering and its corresponding point cloud. (d) The final depth estimation result after DNN-based refinement with its corresponding point cloud.
           </p>
-          <img class="img-fluid" src="images/mvs_equation.png" width="40%">
+          <img class="img-fluid" src="images/mvs_equation.png" width="35%">
           <p class="text-justify">
             We estimate depth map using an SGM based multi-view stereo approach, which is carried out in a uniformly sampled inverse depth space.
             We use weighted Census Transform to compute patch similarity cost <img class="img-fluid" src="images/census_cost.png" width="5%">, with scores of neighboring frames as weights.
@@ -202,7 +202,7 @@
           <p class="text-justify">
 			Each estimated depth map is integrated into the TSDF voxels, with associated voxels generated / updated in the conventional way.			
 		  </p>
-          <img class="img-fluid" src="images/TSDF.png" width="50%">
+          <img class="img-fluid" src="images/TSDF.png" width="35%">
 		  <p class="text-justify">
 			To handle the influence of dynamic objects，we project existing voxels to the current frame for depth visibility checking. 
 		  </p>
@@ -211,7 +211,7 @@
           <p class="text-justify">
 			We use an incremental marching cubes algorithm to maintain a status variable for each voxel indicating whether it is newly added or updated or not. For each keyframe, we only need to extract or update mesh triangles from the newly added and updated cubes.
 		  </p>
-          <img class="img-fluid" src="images/marching_cube.png" width="50%">
+          <img class="img-fluid" src="images/marching_cube.png" width="40%">
 		  <br>
         </div>
       </div>
